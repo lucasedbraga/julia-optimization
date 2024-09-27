@@ -1,5 +1,6 @@
 using DataFrames
-using ODBC
+using MySQL
+using DBInterface
 
 # Lendo os parâmetros do arquivo
 function ler_parametros(arquivo)
@@ -7,12 +8,12 @@ function ler_parametros(arquivo)
     linhas = readlines(arquivo)
 
     # Criando um dicionário para armazenar os dados
-    parametros = Dict{String, Int}()
+    parametros = Dict{String, String}()
 
     # Processando cada linha
     for linha in linhas
-        chave, valor = split(linha, ";")  # Dividindo a linha em chave e valor
-        parametros[chave] = parse(Int, valor)  # Convertendo o valor para inteiro e armazenando
+        chave, valor = split(linha, ";") 
+        parametros[chave] = valor
     end
 
     return parametros  # Retornando os valores
@@ -24,16 +25,21 @@ caminho_arquivo = "../UNTRACKED/ODBC_connect/log_info.txt"
 # Lendo os parâmetros
 parametros = ler_parametros(caminho_arquivo)
 
-# Conectar ao banco de dados (substitua pela sua string de conexão)
-# conn = ODBC.Connection('DSN=parametros["DSN"];UID=parametros["usuario"];PWD=parametros["senha"]')
+# Criar a conexão
+conn = DBInterface.connect(MySQL.Connection, 
+                           parametros["host"], 
+                           parametros["user"], 
+                           parametros["password"], 
+                           db=parametros["database"])
 
-# Executar uma consulta SQL
-# query = "SELECT * FROM sua_tabela"
-# df = DataFrame(ODBC.query(conn, query))
+println("CONEXÃO ESTABELECIDA")
 
-# Fechar a conexão
-# ODBC.close(conn)
+query = "SELECT * FROM Tabela_TESTE"  
+df = DataFrame(DBInterface.execute(conn,query))
+DBInterface.close(conn)
 
+# Mostrar o DataFrame
+println(df)
 # Exibir o DataFrame
 println("DF - ODBC")
 # println(first(df, 13))
