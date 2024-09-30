@@ -166,3 +166,5 @@ cython_debug/
 UNTRACKED/
 kickoff/data_SQL.db
 kickoff/data.csv
+kickoff/data_SQL.db
+kickoff/grafico_seno.png
