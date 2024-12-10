@@ -6,10 +6,10 @@ gr()
 plot(rand(3),rand(3))
 nothing
 
-numero_produtos = 4
+numero_produtos = 20
 numero_fabricas = 3
-numero_CentroDistribuicao = 6
-numero_revendedores = 20
+numero_CentroDistribuicao = 10
+numero_revendedores = 200
 horizonte_planejamento = 4
 
 Random.seed!(0)
