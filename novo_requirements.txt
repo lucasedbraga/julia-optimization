@@ -1,0 +1,10 @@
+cvxpy
+PuLP
+scikit-learn
+tensorflow
+networkx
+ortools
+gurobipy
+deap
+pygad
+
