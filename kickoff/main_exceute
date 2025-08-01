@@ -1,33 +1,37 @@
 #!/usr/bin/env bash
 
-echo "Iniciando execução dos testes em segundo plano..."
+echo "Iniciando execução dos testes de esforço computacional..."
 
-# Caminhos dos scripts
-SCRIPT_JULIA="kickoff/test_julia_esforco_computacional.jl"
-SCRIPT_PYTHON="kickoff/test_python_esforco_computacional.py"
+# --- Diretório atual ---
+DIR_ATUAL=$(pwd)
+SCRIPT_JULIA="$DIR_ATUAL/kickoff/test_julia_esforco_computacional.jl"
+SCRIPT_PYTHON="$DIR_ATUAL/kickoff/test_python_esforco_computacional.py"
 
-# Verifica se Julia está disponível
+# --- Verificação de dependências ---
 if ! command -v julia >/dev/null 2>&1; then
     echo "Erro: Julia não encontrada no PATH."
     exit 1
 fi
 
-# Verifica se Python está disponível
-if ! command -v python >/dev/null 2>&1; then
+if ! command -v python3 >/dev/null 2>&1 && ! command -v python >/dev/null 2>&1; then
     echo "Erro: Python não encontrado no PATH."
     exit 1
 fi
 
-# Executa o script Julia em segundo plano com nohup
+# Usa python3 se existir, senão python
+PYTHON_CMD=$(command -v python3 || command -v python)
+
+# --- Execução do script Julia ---
+echo ""
 echo "Executando Julia..."
-nohup julia "$SCRIPT_JULIA" > log_julia.txt 2>&1 &
-PID_JULIA=$!
+julia "$SCRIPT_JULIA" 2>&1 | tee log_julia.txt
 
-# Aguarda o término da execução de Julia
-wait "$PID_JULIA"
-
-# Executa o script Python em segundo plano com nohup
+# --- Execução do script Python ---
+echo ""
 echo "Executando Python..."
-nohup python "$SCRIPT_PYTHON" > log_python.txt 2>&1 &
+$PYTHON_CMD "$SCRIPT_PYTHON" 2>&1 | tee log_python.txt
 
-echo "Execuções iniciadas. Veja os arquivos log_julia.txt e log_python.txt para acompanhar."
+echo ""
+echo "Execuções concluídas. Logs salvos em:"
+echo " - $DIR_ATUAL/log_julia.txt"
+echo " - $DIR_ATUAL/log_python.txt"
