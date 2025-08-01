@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+echo "Iniciando execução dos testes em segundo plano..."
+
+# Caminhos dos scripts
+SCRIPT_JULIA="kickoff/test_julia_esforco_computacional.jl"
+SCRIPT_PYTHON="kickoff/test_python_esforco_computacional.py"
+
+# Verifica se Julia está disponível
+if ! command -v julia >/dev/null 2>&1; then
+    echo "Erro: Julia não encontrada no PATH."
+    exit 1
+fi
+
+# Verifica se Python está disponível
+if ! command -v python >/dev/null 2>&1; then
+    echo "Erro: Python não encontrado no PATH."
+    exit 1
+fi
+
+# Executa o script Julia em segundo plano com nohup
+echo "Executando Julia..."
+nohup julia "$SCRIPT_JULIA" > log_julia.txt 2>&1 &
+PID_JULIA=$!
+
+# Aguarda o término da execução de Julia
+wait "$PID_JULIA"
+
+# Executa o script Python em segundo plano com nohup
+echo "Executando Python..."
+nohup python "$SCRIPT_PYTHON" > log_python.txt 2>&1 &
+
+echo "Execuções iniciadas. Veja os arquivos log_julia.txt e log_python.txt para acompanhar."
