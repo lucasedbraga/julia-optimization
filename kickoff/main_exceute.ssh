@@ -1,0 +1,21 @@
+#!/bin/bash
+
+echo "Iniciando execução dos testes em segundo plano..."
+
+# Caminhos dos scripts
+SCRIPT_JULIA="kickoff/test_julia_esforco_computacional.jl"
+SCRIPT_PYTHON="kickoff/test_python_esforco_computacional.py"
+
+# Executa o script Julia em segundo plano com nohup
+echo "Executando Julia..."
+nohup julia $SCRIPT_JULIA > log_julia.txt 2>&1 &
+
+# Espera o script Julia terminar antes de iniciar o Python
+wait $!
+
+# Executa o script Python em segundo plano com nohup
+echo "Executando Python..."
+nohup python3 $SCRIPT_PYTHON > log_python.txt 2>&1 &
+
+# Mensagem final
+echo "Execuções iniciadas. Veja os arquivos log_julia.txt e log_python.txt para acompanhar."
